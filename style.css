@@ -157,19 +157,19 @@ body{
     padding: 16px 0;
     background: var(--primary-color);
 }
-.prompt-container :where(.prompt-wrapper, .promt-form, .prompt-actions) {
+.prompt-container :where(.prompt-wrapper, .prompt-form, .prompt-actions) {
     display: flex;
     gap: 12px;
     height: 56px;
     align-items: center;
 }
-.prompt-wrapper .promt-form{
+.prompt-wrapper .prompt-form{
     width: 100%;
     height: 100%;
     border-radius: 130px;
     background: var(--secondary-color);
 }
-.promt-form .prompt-input{
+.prompt-form .prompt-input{
     height: 100%;
     width: 100%;
     background: none;
@@ -179,7 +179,7 @@ body{
     padding-left: 24px;
     color: var(--text-color);
 }
-.promt-form .prompt-input::placeholder{
+.prompt-form .prompt-input::placeholder{
     color: var(--placeholder-color);
 }
 .prompt-wrapper button{
@@ -197,23 +197,23 @@ body{
 .prompt-wrapper button:hover{
     background: var(--secondary-hover-color);
 }
-.promt-form .prompt-actions{
+.prompt-form .prompt-actions{
     gap: 5px;
     margin-right: 7px;
 }
-.promt-form .prompt-actions button{
+.prompt-form .prompt-actions button{
     height: 45px;
     width: 45px;
 }
-.promt-form #send-prompt-btn{
+.prompt-form #send-prompt-btn{
     color: #fff;
     display: none;
     background: red;
 }
-.promt-form .prompt-input:valid ~ .prompt-actions #send-prompt-btn{
+.prompt-form .prompt-input:valid ~ .prompt-actions #send-prompt-btn{
     display: block;
 }
-.promt-form #send-prompt-btn:hover{
+.prompt-form #send-prompt-btn:hover{
     background: black;
 }
 .prompt-container .disclaimer-text{
