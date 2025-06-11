@@ -46,8 +46,10 @@
                     <input type="text" placeholder="Ask Gemini" class="prompt-input" required>
                     <div class="prompt-actions">
                         <!-- File Upload Wrapper -->
-                        <div class="file-upload-wrapper active">
-                            <img src="test-img.jpg" alt="" class="file-preview">
+                        <div class="file-upload-wrapper">
+                            <img src="#" alt="" class="file-preview">
+                            <input type="file" accept="image/*, .pdf, .txt, .csv" id="file-input" hidden>
+                            <button type="button" class="file-icon material-symbols-rounded">description</button>
                             <button id="add-file-btn" type="button" class="material-symbols-rounded">attach_file</button>
                             <button id="cancel-file-btn" type="button" class="material-symbols-rounded">close</button>
                         </div>
