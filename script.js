@@ -17,6 +17,20 @@ const createMsgElement = (content, ...classes) => {
     return div;
 }
 
+const typingEffect = (text, textElement, botMsgDiv) => {
+    textElement.textContent = "";
+    const words = text.split(" ");
+    let wordIndex = 0;
+
+    const typingInterval = setInterval(() => {
+        if(wordIndex < words.length) {
+            textElement.textContent += (wordIndex === 0 ? "" : " ") + words[wordIndex++];
+        } else {
+            clearInterval(typingInterval);
+        }
+    }, 40);
+}
+
 // Make the API call and generate the bot's response
 const generateReponse = async (botMsgDiv) => {
     const textElement = botMsgDiv.querySelector(".message-text")
@@ -37,9 +51,9 @@ const generateReponse = async (botMsgDiv) => {
         const data = await response.json();
         if(!response.ok) throw new Error(data.error.message);
 
-        // Process the response text and display it
+        // Process the response text and display with typing effect
         const responseText = data.candidates[0].content.parts[0].text.replace(/\*\*([^*]+)\*\*/g, "$1").trim();
-        textElement.textContent = responseText;
+        typingEffect(responseText, textElement, botMsgDiv)
     } catch (error) {
         console.log(error);
     }
