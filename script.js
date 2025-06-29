@@ -9,8 +9,9 @@ const fileUploadWrapper = promptForm.querySelector(".file-upload-wrapper");
 const API_KEY = "AIzaSyA2hhKbdbWKbFF-mtoVaIXwM7BGIJhLvpE"
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
+let typingInterval, controller;
 const chatHistory = [];
-let userData = {message: "", file: {}};
+const userData = {message: "", file: {}};
 
 // Function to create message elements
 const createMsgElement = (content, ...classes) => {
@@ -29,7 +30,7 @@ const typingEffect = (text, textElement, botMsgDiv) => {
     const words = text.split(" ");
     let wordIndex = 0;
 
-    const typingInterval = setInterval(() => {
+    typingInterval = setInterval(() => {
         if(wordIndex < words.length) {
             textElement.textContent += (wordIndex === 0 ? "" : " ") + words[wordIndex++];
             botMsgDiv.classList.remove("loading");
@@ -42,7 +43,8 @@ const typingEffect = (text, textElement, botMsgDiv) => {
 
 // Make the API call and generate the bot's response
 const generateReponse = async (botMsgDiv) => {
-    const textElement = botMsgDiv.querySelector(".message-text")
+    const textElement = botMsgDiv.querySelector(".message-text");
+    controller = new AbortController();
 
     // Add user message and file to the chat history
     chatHistory.push({
@@ -55,7 +57,8 @@ const generateReponse = async (botMsgDiv) => {
         const response = await fetch(API_URL, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify( {contents: chatHistory} )
+            body: JSON.stringify( {contents: chatHistory} ),
+            signal: controller.signal
         });
         const data = await response.json();
         if(!response.ok) throw new Error(data.error.message);
@@ -82,6 +85,7 @@ const handleFormSubmit = (e) => {
 
     promptInput.value = "";
     userData.message = userMessage;
+    fileUploadWrapper.classList.remove("active", "img-attached", "file-attached");
 
     // Generate user message HTML with optional file attachment
     const userMsgHTML = `
@@ -125,6 +129,12 @@ fileInput.addEventListener("change", () =>{
 document.querySelector("#cancel-file-btn").addEventListener("click", () => {
     userData.file = {};
     fileUploadWrapper.classList.remove("active", "img-attached", "file-attached");
+});
+// Stop on going bot response
+document.querySelector("#stop-response-btn").addEventListener("click", () => {
+    userData.file = {};
+    controller?.abort();
+    clearInterval(typingInterval);
 });
 
 promptForm.addEventListener("submit", handleFormSubmit);
