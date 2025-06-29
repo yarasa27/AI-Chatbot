@@ -33,10 +33,11 @@ const typingEffect = (text, textElement, botMsgDiv) => {
     typingInterval = setInterval(() => {
         if(wordIndex < words.length) {
             textElement.textContent += (wordIndex === 0 ? "" : " ") + words[wordIndex++];
-            botMsgDiv.classList.remove("loading");
             scrollToBottom();
         } else {
             clearInterval(typingInterval);
+            botMsgDiv.classList.remove("loading");
+            document.body.classList.remove("bot-responding");
         }
     }, 40);
 }
@@ -81,10 +82,11 @@ const generateReponse = async (botMsgDiv) => {
 const handleFormSubmit = (e) => {
     e.preventDefault();
     const userMessage = promptInput.value.trim();
-    if(!userMessage) return;
+    if(!userMessage || document.body.classList.contains("bot-responding")) return;
 
     promptInput.value = "";
     userData.message = userMessage;
+    document.body.classList.add("bot-responding");
     fileUploadWrapper.classList.remove("active", "img-attached", "file-attached");
 
     // Generate user message HTML with optional file attachment
@@ -130,11 +132,21 @@ document.querySelector("#cancel-file-btn").addEventListener("click", () => {
     userData.file = {};
     fileUploadWrapper.classList.remove("active", "img-attached", "file-attached");
 });
+
 // Stop on going bot response
 document.querySelector("#stop-response-btn").addEventListener("click", () => {
     userData.file = {};
     controller?.abort();
     clearInterval(typingInterval);
+    chatsContainer.querySelector(".bot-message.loading").classList.remove("loading");
+    document.body.classList.remove("bot-responding");
+});
+
+// Delete all chats
+document.querySelector("#delete-chats-btn").addEventListener("click", () => {
+    chatHistory.length = 0;
+    chatsContainer.innerHTML = "";
+    document.body.classList.remove("bot-responding");
 });
 
 promptForm.addEventListener("submit", handleFormSubmit);
