@@ -44,7 +44,7 @@ const typingEffect = (text, textElement, botMsgDiv) => {
 const generateReponse = async (botMsgDiv) => {
     const textElement = botMsgDiv.querySelector(".message-text")
 
-    // Add user message and file  to the chat history
+    // Add user message and file to the chat history
     chatHistory.push({
         role: "user",
         parts: [{ text: userData.message }, ...(userData.file.data ? [{ inline_data: (({ fileName, isImage, ...rest})=> rest)(userData.file) }] : [])]
@@ -69,6 +69,8 @@ const generateReponse = async (botMsgDiv) => {
         
     } catch (error) {
         console.log(error);
+    } finally {
+        userData.file = {};
     }
 }
 
@@ -81,10 +83,11 @@ const handleFormSubmit = (e) => {
     promptInput.value = "";
     userData.message = userMessage;
 
-    // Generate user message HTML and add in the chats container
-    const userMsgHTML = `<p class="message-text"></p>`;
-    const userMsgDiv = createMsgElement(userMsgHTML, "user-message");
+    // Generate user message HTML with optional file attachment
+    const userMsgHTML = `
+        <p class="message-text"></p>${userData.file.data ? (userData.file.isImage ? `<img src="data:${userData.file.mime_type};base64,${userData.file.data}" class="img-attachment" />` : `<p class="file-attachment"><span class="material-symbols-rounded">description</span>${userData.file.fileName}</p>`) : ""}`;
 
+    const userMsgDiv = createMsgElement(userMsgHTML, "user-message");
     userMsgDiv.querySelector(".message-text").textContent = userMessage;
     chatsContainer.appendChild(userMsgDiv);
     scrollToBottom();
@@ -120,6 +123,7 @@ fileInput.addEventListener("change", () =>{
 
 // Cancel file upload
 document.querySelector("#cancel-file-btn").addEventListener("click", () => {
+    userData.file = {};
     fileUploadWrapper.classList.remove("active", "img-attached", "file-attached");
 });
 
